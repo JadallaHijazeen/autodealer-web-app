@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - AutoDealer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 100px auto 50px;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .admin-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #7f8c8d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab-button.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .admin-table th,
+        .admin-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .admin-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .status-available {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .status-rented {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-warning {
+            background: #f39c12;
+        }
+        
+        .btn-warning:hover {
+            background: #d68910;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card.success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+        
+        .stat-card.warning {
+            background: linear-gradient(135deg, #f39c12, #d68910);
+        }
+        
+        .stat-card.danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1 class="logo">AutoDealer Admin</h1>                <ul class="nav-menu">
+                    <li><a href="index.html">Back to Website</a></li>
+                    <li><a href="test.html">System Test</a></li>
+                    <li><a href="#" onclick="refreshData()">Refresh Data</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1>Admin Dashboard</h1>
+                <p>Manage cars, users, and rentals</p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalCars">0</h3>
+                    <p>Total Cars</p>
+                </div>
+                <div class="stat-card success">
+                    <h3 id="availableCars">0</h3>
+                    <p>Available Cars</p>
+                </div>
+                <div class="stat-card danger">
+                    <h3 id="rentedCars">0</h3>
+                    <p>Rented Cars</p>
+                </div>
+                <div class="stat-card warning">
+                    <h3 id="totalUsers">0</h3>
+                    <p>Total Users</p>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="admin-tabs">
+                <button class="tab-button active" onclick="showTab('cars')">Cars Management</button>
+                <button class="tab-button" onclick="showTab('rentals')">Active Rentals</button>
+                <button class="tab-button" onclick="showTab('users')">Users</button>
+            </div>
+
+            <!-- Cars Tab -->
+            <div id="cars" class="tab-content active">
+                <h2>Cars Management</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Make & Model</th>
+                            <th>Year</th>
+                            <th>Color</th>
+                            <th>Price/Day</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="carsTableBody">
+                        <!-- Cars will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Rentals Tab -->
+            <div id="rentals" class="tab-content">
+                <h2>Active Rentals</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Rental ID</th>
+                            <th>Customer</th>
+                            <th>Car</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Total Cost</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rentalsTableBody">
+                        <!-- Rentals will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users" class="tab-content">
+                <h2>Registered Users</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Users will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAdminData();
+        });
+
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Hide all tab buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function loadAdminData() {
+            try {
+                // Load cars
+                const carsResponse = await fetch('php/admin_get_cars.php');
+                const carsData = await carsResponse.json();
+                
+                if (carsData.success) {
+                    displayCars(carsData.cars);
+                    updateStats(carsData.cars);
+                }
+
+                // Load rentals
+                const rentalsResponse = await fetch('php/admin_get_rentals.php');
+                const rentalsData = await rentalsResponse.json();
+                
+                if (rentalsData.success) {
+                    displayRentals(rentalsData.rentals);
+                }
+
+                // Load users
+                const usersResponse = await fetch('php/admin_get_users.php');
+                const usersData = await usersResponse.json();
+                
+                if (usersData.success) {
+                    displayUsers(usersData.users);
+                    document.getElementById('totalUsers').textContent = usersData.users.length;
+                }
+
+            } catch (error) {
+                console.error('Error loading admin data:', error);
+                // Load demo data for testing
+                loadDemoAdminData();
+            }
+        }
+
+        function updateStats(cars) {
+            const totalCars = cars.length;
+            const availableCars = cars.filter(car => car.available).length;
+            const rentedCars = totalCars - availableCars;
+
+            document.getElementById('totalCars').textContent = totalCars;
+            document.getElementById('availableCars').textContent = availableCars;
+            document.getElementById('rentedCars').textContent = rentedCars;
+        }
+
+        function displayCars(cars) {
+            const tbody = document.getElementById('carsTableBody');
+            tbody.innerHTML = '';
+
+            cars.forEach(car => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${car.id}</td>
+                    <td>${car.make} ${car.model}</td>
+                    <td>${car.year}</td>
+                    <td>${car.color}</td>
+                    <td>$${car.price}</td>
+                    <td class="${car.available ? 'status-available' : 'status-rented'}">
+                        ${car.available ? 'Available' : 'Rented'}
+                    </td>
+                    <td class="action-buttons">
+                        <button class="btn btn-small" onclick="editCar(${car.id})">Edit</button>
+                        <button class="btn btn-small btn-warning" onclick="toggleAvailability(${car.id}, ${car.available})">
+                            ${car.available ? 'Mark Rented' : 'Mark Available'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function displayRentals(rentals) {
+            const tbody = document.getElementById('rentalsTableBody');
+            tbody.innerHTML = '';
+
+            rentals.forEach(rental => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${rental.rental_id}</td>
+                    <td>${rental.customer_name}</td>
+                    <td>${rental.car_make} ${rental.car_model}</td>
+                    <td>${rental.start_date}</td>
+                    <td>${rental.end_date}</td>
+                    <td>$${rental.total_cost}</td>
+                    <td>${rental.status}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-small" onclick="viewRental('${rental.rental_id}')">View</button>
+                        <button class="btn btn-small btn-warning" onclick="completeRental('${rental.rental_id}')">Complete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function displayUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone}</td>
+                    <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-small" onclick="viewUser(${user.id})">View</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function refreshData() {
+            loadAdminData();
+            alert('Data refreshed successfully!');
+        }        function editCar(carId) {
+            const newPrice = prompt('Enter new daily price for this car:');
+            if (newPrice && !isNaN(newPrice) && parseFloat(newPrice) > 0) {
+                // In a full implementation, this would call an admin_update_car_price.php endpoint
+                alert(`Car price would be updated to $${newPrice}/day for car ID: ${carId}\n(This would require an additional PHP endpoint)`);
+            } else if (newPrice !== null) {
+                alert('Please enter a valid price');
+            }
+        }async function toggleAvailability(carId, currentStatus) {
+            if (confirm(`Are you sure you want to ${currentStatus ? 'mark as rented' : 'mark as available'} this car?`)) {
+                try {
+                    const response = await fetch('php/admin_update_car.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            carId: carId,
+                            available: !currentStatus
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert(result.message);
+                        loadAdminData(); // Refresh data
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error updating car status:', error);
+                    alert('Failed to update car status');
+                }
+            }
+        }        async function viewRental(rentalId) {
+            try {
+                const response = await fetch(`php/admin_get_rental_details.php?rental_id=${rentalId}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const rental = result.rental;
+                    alert(`Rental Details:
+Rental ID: ${rental.rental_id}
+Customer: ${rental.customer_name} (${rental.customer_email})
+Phone: ${rental.customer_phone}
+Car: ${rental.car_make} ${rental.car_model} (${rental.car_year})
+Color: ${rental.car_color}
+Start Date: ${rental.start_date}
+End Date: ${rental.end_date}
+Days: ${rental.days}
+Daily Rate: $${rental.daily_rate}
+Total Cost: $${rental.total_cost}
+Status: ${rental.status}
+Booked At: ${new Date(rental.created_at).toLocaleString()}`);
+                } else {
+                    alert('Error loading rental details: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching rental details:', error);
+                alert('Failed to load rental details');
+            }
+        }
+
+        async function completeRental(rentalId) {
+            if (confirm('Mark this rental as completed?')) {
+                try {
+                    const response = await fetch('php/admin_complete_rental.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            rentalId: rentalId
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert(result.message);
+                        loadAdminData(); // Refresh data
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error completing rental:', error);
+                    alert('Failed to complete rental');
+                }
+            }
+        }        async function viewUser(userId) {
+            try {
+                // For now, we'll get user details from the loaded data
+                // In a full implementation, this could call a dedicated admin_get_user_details.php endpoint
+                const usersResponse = await fetch('php/admin_get_users.php');
+                const usersData = await usersResponse.json();
+                
+                if (usersData.success) {
+                    const user = usersData.users.find(u => u.id == userId);
+                    if (user) {
+                        alert(`User Details:
+ID: ${user.id}
+Name: ${user.name}
+Email: ${user.email}
+Phone: ${user.phone}
+Joined: ${new Date(user.created_at).toLocaleString()}
+Total Rentals: ${user.rental_count || 0}`);
+                    } else {
+                        alert('User not found');
+                    }
+                } else {
+                    alert('Error loading user details');
+                }
+            } catch (error) {
+                console.error('Error fetching user details:', error);
+                alert('Failed to load user details');
+            }
+        }
+
+        // Demo data for testing without backend
+        function loadDemoAdminData() {
+            const demoCars = [
+                {id: 1, make: 'Toyota', model: 'Camry', year: 2023, color: 'white', price: 50, available: true},
+                {id: 2, make: 'BMW', model: 'X5', year: 2023, color: 'black', price: 120, available: false},
+                {id: 3, make: 'Mercedes', model: 'C-Class', year: 2023, color: 'silver', price: 100, available: true}
+            ];
+
+            const demoRentals = [
+                {
+                    rental_id: 'RENT20250601001',
+                    customer_name: 'John Demo',
+                    car_make: 'BMW',
+                    car_model: 'X5',
+                    start_date: '2025-06-01',
+                    end_date: '2025-06-05',
+                    total_cost: 480,
+                    status: 'active'
+                }
+            ];
+
+            const demoUsers = [
+                {
+                    id: 1,
+                    name: 'John Demo',
+                    email: 'demo@example.com',
+                    phone: '555-0123',
+                    created_at: '2025-05-01T10:00:00Z'
+                }
+            ];
+
+            displayCars(demoCars);
+            displayRentals(demoRentals);
+            displayUsers(demoUsers);
+            updateStats(demoCars);
+            document.getElementById('totalUsers').textContent = demoUsers.length;
+        }
+    </script>
+</body>
+</html>

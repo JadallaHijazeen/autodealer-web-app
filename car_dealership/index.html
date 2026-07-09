@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoDealer - Premium Car Dealership</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1 class="logo">AutoDealer</h1>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#cars">Cars</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li id="auth-links">
+                        <a href="#" onclick="showLogin()">Login</a>
+                        <a href="#" onclick="showSignup()">Sign Up</a>
+                    </li>
+                    <li id="user-menu" style="display: none;">
+                        <span id="username-display"></span>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h2>Find Your Dream Car</h2>
+                <p>Premium vehicles at unbeatable prices</p>
+                <button class="cta-button" onclick="document.getElementById('cars').scrollIntoView()">
+                    Browse Cars
+                </button>
+            </div>
+        </section>
+
+        <!-- Cars Section -->
+        <section id="cars" class="cars-section">
+            <div class="container">
+                <h2>Available Cars</h2>
+                <div class="car-filters">
+                    <select id="colorFilter" onchange="filterCars()">
+                        <option value="">All Colors</option>
+                        <option value="red">Red</option>
+                        <option value="blue">Blue</option>
+                        <option value="black">Black</option>
+                        <option value="white">White</option>
+                        <option value="silver">Silver</option>
+                    </select>
+                </div>
+                <div id="cars-container" class="cars-grid">
+                    <!-- Cars will be loaded here -->
+                </div>
+            </div>
+        </section>
+<!-- ABOUT SECTION -->
+<section
+  id="about"
+  class="container mb-2"
+  style="
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  "
+>
+  <h2 class="text-center mb-2" style="color: #2c3e50; font-size: 2.5rem;">About Us</h2>
+
+  <div
+    class="about-content"
+    style="
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    "
+  >
+    <!-- Text Area -->
+    <div class="about-text">
+      <p class="mb-1" style="line-height: 1.8;">
+        Since 2010, <strong>AutoDealer Co.</strong> has been committed to delivering top-notch
+        vehicles and unparalleled customer service. Over the past decade, we’ve grown our fleet to
+        over 500 vehicles, ranging from fuel-efficient compacts to luxury SUVs and electric models. We
+        carefully maintain each car to ensure your ride is always comfortable, reliable, and safe.
+      </p>
+      <p class="mb-1" style="line-height: 1.8;">
+        Our mission is simple: make renting a car as hassle-free as possible. Whether you’re traveling
+        for business, exploring Jordan on a road trip, or simply need a convenient ride around
+        Amman, our easy online booking system and transparent pricing keep stress at bay. We believe
+        in honest service—no hidden fees, no surprises.
+      </p>
+      <ul class="mb-1" style="list-style: disc inside; line-height: 1.8;">
+        <li>
+          <strong>Extensive Fleet Options:</strong> Economy, Compact, Sedan, SUV, Luxury, EV
+        </li>
+        <li>
+          <strong>Flexible Rental Plans:</strong> Hourly, Daily, Weekly, Monthly—and special
+          weekend packages
+        </li>
+        <li>
+          <strong>24/7 Roadside Assistance:</strong> Peace of mind from the moment you grab the
+          keys
+        </li>
+        <li>
+          <strong>Loyalty Rewards:</strong> Earn points on every booking, redeemable for free rental
+          days
+        </li>
+      </ul>
+      <p class="mb-1" style="line-height: 1.8;">
+        We’re proud to be a locally-owned Jordanian company with a global mindset—partnering with
+        major hotels and travel agencies to bring you seamless pick-up/drop-off options. Our friendly
+        customer support team is always just a call or email away. Book today and discover why
+        thousands trust CarRental Co. for their journeys.
+      </p>
+    </div>
+
+    <!-- Image Area -->
+    <div class="about-image">
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJJHfkTh6F7R7UTRCY2TzmjuJKCcesM_aSkw&s"
+        alt="Fleet of cars"
+        style="width: 100%; height: auto; border-radius: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);"
+      />
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section
+  id="contact"
+  class="container mb-2"
+  style="
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  "
+>
+  <h2 class="text-center mb-2" style="color: #2c3e50; font-size: 2.5rem;">Contact Us</h2>
+
+  <div
+    class="contact-content"
+    style="
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    "
+  >
+    <!-- Contact Information -->
+    <div class="contact-info">
+      <h3 class="mb-1" style="color: #2c3e50; font-size: 1.8rem;">Head Office</h3>
+      <p class="mb-1" style="line-height: 1.6;">
+        <strong>Address:</strong> 123 Main Street, Amman, Jordan
+      </p>
+      <p class="mb-1" style="line-height: 1.6;">
+        <strong>Phone:</strong> +962-6-1234567
+      </p>
+      <p class="mb-1" style="line-height: 1.6;">
+        <strong>Email:</strong>
+        <a href="mailto:info@carrental.com" style="color: #3498db; text-decoration: none;">
+          info@carrental.com
+        </a>
+      </p>
+      <p class="mb-1" style="line-height: 1.6;">
+        <strong>Office Hours:</strong> Sunday – Thursday, 8:00 AM – 6:00 PM
+      </p>
+
+      
+    <!-- Contact Form -->
+    <div class="contact-form">
+     <form action="https://api.web3forms.com/submit" method="POST" class="contact-form">
+    <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+    <input type="text" name="name" placeholder="Your Name" required>
+    <input type="email" name="email" placeholder="Your Email" required>
+    <textarea name="message" rows="6" placeholder="Your Message" required></textarea>
+    <input type="checkbox" name="botcheck">
+    <button type="submit">Submit Form</button>
+</form>
+
+    </div>
+  </div>
+</section>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm" onsubmit="login(event)">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="signupForm" onsubmit="signup(event)">
+                <input type="text" id="signupName" placeholder="Full Name" required>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <input type="tel" id="signupPhone" placeholder="Phone Number" required>
+                <button type="submit">Sign Up</button>
+            </form>
+            <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+        </div>
+    </div>
+
+    <!-- Car Details Modal -->
+    <div id="carModal" class="modal">
+        <div class="modal-content car-modal-content">
+            <span class="close" onclick="closeModal('carModal')">&times;</span>
+            <div id="carDetails">
+                <!-- Car details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Rental Modal -->
+    <div id="rentalModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('rentalModal')">&times;</span>
+            <h2>Rent This Car</h2>
+            <form id="rentalForm" onsubmit="rentCar(event)">
+                <input type="hidden" id="rentalCarId">
+                <label for="rentalDays">Number of Days:</label>
+                <input type="number" id="rentalDays" min="1" max="30" required>
+                <label for="rentalStartDate">Start Date:</label>
+                <input type="date" id="rentalStartDate" required>
+                <div id="rentalSummary"></div>
+                <button type="submit">Confirm Rental</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 AutoDealer. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
